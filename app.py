@@ -150,6 +150,41 @@ class Testimonial(db.Model):
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+# ============= AUTO INIT DB (Render/Gunicorn) =============
+with app.app_context():
+    db.create_all()
+
+    # Create admin user if not exists
+    if not User.query.filter_by(username='shalaby').first():
+        admin = User(
+            username='shalaby',
+            password=generate_password_hash('shalaby', method='pbkdf2:sha256')
+        )
+        db.session.add(admin)
+
+    # Default settings
+    if not SiteSettings.query.first():
+        settings = SiteSettings(
+            site_name='3S Smart Software Solution',
+            site_title='3S — Smart Software Solution',
+            site_description='حلول برمجية ذكية للشركات',
+            primary_color='#060024',
+            secondary_color='#0ed1ff',
+            logo='assets/3S Logo-07.png',
+            favicon='assets/3S Logo-07.png'
+        )
+        db.session.add(settings)
+
+    # Default contact info
+    if not ContactInfo.query.first():
+        contact = ContactInfo(
+            phone='966532180937',
+            whatsapp='966532180937',
+            email='info@3s-solutions.com'
+        )
+        db.session.add(contact)
+
+    db.session.commit()
 
 # ============= PUBLIC ROUTES =============
 
@@ -455,3 +490,4 @@ def init_db():
 if __name__ == '__main__':
     init_db()
     app.run(debug=True, port=5000)
+
