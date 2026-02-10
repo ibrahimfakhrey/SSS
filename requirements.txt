@@ -2,3 +2,8 @@ Flask
 gunicorn
 Flask-SQLAlchemy
 Flask-Login
+Werkzeug
+Jinja2
+itsdangerous
+click
+
