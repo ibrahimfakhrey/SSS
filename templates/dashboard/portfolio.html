@@ -1,0 +1,90 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}إدارة المشاريع{% endblock %}
+{% block page_title %}إدارة المشاريع{% endblock %}
+
+{% block topbar_actions %}
+<button type="button" class="btn btn-primary" onclick="showAddModal()">
+    ➕ إضافة مشروع جديد
+</button>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>جميع المشاريع ({{ portfolio|length }})</h3>
+    </div>
+
+    {% if portfolio %}
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; margin-top: 20px;">
+        {% for item in portfolio %}
+        <div style="background: rgba(14,209,255,0.05); border: 1px solid rgba(14,209,255,0.2); border-radius: 12px; overflow: hidden;">
+            {% if item.image %}
+            <img src="{{ url_for('static', filename=item.image) }}" alt="{{ item.title }}" style="width: 100%; height: 180px; object-fit: cover;">
+            {% else %}
+            <div style="width: 100%; height: 180px; background: rgba(14,209,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 60px;">
+                💼
+            </div>
+            {% endif %}
+            <div style="padding: 20px;">
+                <h4 style="color: #0ed1ff; margin-bottom: 10px;">{{ item.title }}</h4>
+                <p style="color: rgba(255,255,255,0.7); font-size: 14px; margin-bottom: 15px;">
+                    {{ item.description[:100] }}{% if item.description|length > 100 %}...{% endif %}
+                </p>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-secondary" style="padding: 8px 15px; font-size: 13px;">✏️ تعديل</button>
+                    <button class="btn btn-danger" style="padding: 8px 15px; font-size: 13px;">🗑️ حذف</button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p style="text-align: center; color: rgba(255,255,255,0.6); padding: 40px;">
+        لا توجد مشاريع حالياً. قم بإضافة مشروع جديد!
+    </p>
+    {% endif %}
+</div>
+
+<!-- Add Portfolio Modal -->
+<div id="addModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
+    <div style="background: #060024; border: 2px solid #0ed1ff; border-radius: 15px; padding: 30px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto;">
+        <h2 style="color: #0ed1ff; margin-bottom: 20px;">إضافة مشروع جديد</h2>
+
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>اسم المشروع</label>
+                <input type="text" name="title" required placeholder="مثال: تطبيق المشتريات">
+            </div>
+
+            <div class="form-group">
+                <label>الوصف</label>
+                <textarea name="description" rows="4" required placeholder="وصف تفصيلي للمشروع..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>صورة المشروع</label>
+                <input type="file" name="image" accept="image/*">
+                <small style="color: rgba(255,255,255,0.6); display: block; margin-top: 5px;">
+                    يفضل PNG أو WEBP - الحجم الموصى به: 800x600px
+                </small>
+            </div>
+
+            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px;">
+                <button type="submit" class="btn btn-primary">💾 حفظ المشروع</button>
+                <button type="button" class="btn btn-secondary" onclick="closeAddModal()">إلغاء</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function showAddModal() {
+    document.getElementById('addModal').style.display = 'flex';
+}
+
+function closeAddModal() {
+    document.getElementById('addModal').style.display = 'none';
+}
+</script>
+{% endblock %}

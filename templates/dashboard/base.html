@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}لوحة التحكم{% endblock %} - 3S Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #060024 0%, #0a0a3a 100%);
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        .dashboard-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: rgba(14, 209, 255, 0.05);
+            border-left: 1px solid rgba(14, 209, 255, 0.2);
+            padding: 30px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 0 30px 30px;
+            border-bottom: 1px solid rgba(14, 209, 255, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .sidebar-header h2 {
+            color: #0ed1ff;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 15px 30px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: rgba(14, 209, 255, 0.1);
+            color: #0ed1ff;
+            border-right: 3px solid #0ed1ff;
+        }
+
+        .sidebar-menu a span {
+            margin-left: 12px;
+            font-size: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-right: 280px;
+            padding: 30px;
+        }
+
+        .topbar {
+            background: rgba(14, 209, 255, 0.05);
+            border: 1px solid rgba(14, 209, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar h1 {
+            color: #0ed1ff;
+            font-size: 28px;
+        }
+
+        .topbar-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0ed1ff, #00a8cc);
+            color: #060024;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(14, 209, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(14, 209, 255, 0.3);
+        }
+
+        .btn-danger {
+            background: rgba(255, 50, 50, 0.2);
+            color: #ff6b6b;
+            border: 1px solid rgba(255, 50, 50, 0.5);
+        }
+
+        .btn-success {
+            background: rgba(50, 255, 150, 0.2);
+            color: #50ff96;
+            border: 1px solid rgba(50, 255, 150, 0.5);
+        }
+
+        .content-wrapper {
+            background: rgba(14, 209, 255, 0.03);
+            border: 1px solid rgba(14, 209, 255, 0.15);
+            border-radius: 15px;
+            padding: 30px;
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: rgba(50, 255, 150, 0.1);
+            border: 1px solid rgba(50, 255, 150, 0.3);
+            color: #50ff96;
+        }
+
+        .alert-danger {
+            background: rgba(255, 50, 50, 0.1);
+            border: 1px solid rgba(255, 50, 50, 0.3);
+            color: #ff6b6b;
+        }
+
+        .alert-info {
+            background: rgba(14, 209, 255, 0.1);
+            border: 1px solid rgba(14, 209, 255, 0.3);
+            color: #0ed1ff;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #0ed1ff;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(14, 209, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            font-size: 15px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #0ed1ff;
+            box-shadow: 0 0 0 3px rgba(14, 209, 255, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(14, 209, 255, 0.05);
+            border: 1px solid rgba(14, 209, 255, 0.2);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-header h3 {
+            color: #0ed1ff;
+            font-size: 20px;
+        }
+
+        /* Table */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .table th,
+        .table td {
+            padding: 15px;
+            text-align: right;
+            border-bottom: 1px solid rgba(14, 209, 255, 0.1);
+        }
+
+        .table th {
+            background: rgba(14, 209, 255, 0.1);
+            color: #0ed1ff;
+            font-weight: 700;
+        }
+
+        .table tr:hover {
+            background: rgba(14, 209, 255, 0.05);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(14, 209, 255, 0.1), rgba(14, 209, 255, 0.05));
+            border: 1px solid rgba(14, 209, 255, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .stat-card h4 {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .stat-value {
+            color: #0ed1ff;
+            font-size: 36px;
+            font-weight: 700;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>3S Dashboard</h2>
+                <p>لوحة التحكم</p>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li><a href="{{ url_for('dashboard') }}" class="{% if request.endpoint == 'dashboard' %}active{% endif %}">
+                    <span>📊</span> الرئيسية
+                </a></li>
+                <li><a href="{{ url_for('settings') }}" class="{% if request.endpoint == 'settings' %}active{% endif %}">
+                    <span>⚙️</span> الإعدادات العامة
+                </a></li>
+                <li><a href="{{ url_for('sections') }}" class="{% if request.endpoint == 'sections' %}active{% endif %}">
+                    <span>📄</span> الأقسام
+                </a></li>
+                <li><a href="{{ url_for('services') }}" class="{% if request.endpoint == 'services' %}active{% endif %}">
+                    <span>🎯</span> الخدمات
+                </a></li>
+                <li><a href="{{ url_for('portfolio') }}" class="{% if request.endpoint == 'portfolio' %}active{% endif %}">
+                    <span>💼</span> المشاريع
+                </a></li>
+                <li><a href="{{ url_for('contact') }}" class="{% if request.endpoint == 'contact' %}active{% endif %}">
+                    <span>📞</span> معلومات التواصل
+                </a></li>
+                <li><a href="{{ url_for('index') }}" target="_blank">
+                    <span>🌐</span> عرض الموقع
+                </a></li>
+                <li><a href="{{ url_for('logout') }}">
+                    <span>🚪</span> تسجيل الخروج
+                </a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="topbar">
+                <h1>{% block page_title %}لوحة التحكم{% endblock %}</h1>
+                <div class="topbar-actions">
+                    {% block topbar_actions %}
+                    {% endblock %}
+                </div>
+            </div>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="content-wrapper">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

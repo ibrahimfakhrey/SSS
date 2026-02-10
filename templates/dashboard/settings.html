@@ -1,0 +1,122 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}الإعدادات العامة{% endblock %}
+{% block page_title %}الإعدادات العامة{% endblock %}
+
+{% block content %}
+<form method="POST" enctype="multipart/form-data">
+    <div class="card">
+        <div class="card-header">
+            <h3>معلومات الموقع</h3>
+        </div>
+
+        <div class="form-group">
+            <label for="site_name">اسم الموقع</label>
+            <input type="text" id="site_name" name="site_name" value="{{ settings.site_name }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="site_title">عنوان الموقع (Title)</label>
+            <input type="text" id="site_title" name="site_title" value="{{ settings.site_title }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="site_description">وصف الموقع</label>
+            <textarea id="site_description" name="site_description" required>{{ settings.site_description }}</textarea>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3>الألوان</h3>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+            <div class="form-group">
+                <label for="primary_color">اللون الأساسي (Primary)</label>
+                <input type="color" id="primary_color" name="primary_color" value="{{ settings.primary_color }}" style="height: 60px;">
+                <small style="color: rgba(255,255,255,0.6); display: block; margin-top: 5px;">
+                    {{ settings.primary_color }}
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="secondary_color">اللون الثانوي (Secondary)</label>
+                <input type="color" id="secondary_color" name="secondary_color" value="{{ settings.secondary_color }}" style="height: 60px;">
+                <small style="color: rgba(255,255,255,0.6); display: block; margin-top: 5px;">
+                    {{ settings.secondary_color }}
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="text_color">لون النص (Text)</label>
+                <input type="color" id="text_color" name="text_color" value="{{ settings.text_color }}" style="height: 60px;">
+                <small style="color: rgba(255,255,255,0.6); display: block; margin-top: 5px;">
+                    {{ settings.text_color }}
+                </small>
+            </div>
+        </div>
+
+        <div style="background: rgba(14,209,255,0.1); border: 1px solid rgba(14,209,255,0.3); border-radius: 8px; padding: 15px; margin-top: 15px;">
+            <strong style="color: #0ed1ff;">💡 نصيحة:</strong>
+            <span style="color: rgba(255,255,255,0.7);">الأساسي للخلفيات، الثانوي للعناوين والأزرار، النص للكتابة</span>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3>الشعار والأيقونات</h3>
+        </div>
+
+        <div class="form-group">
+            <label for="logo">الشعار (Logo)</label>
+            {% if settings.logo %}
+                <div style="margin-bottom: 15px;">
+                    <img src="{{ url_for('static', filename=settings.logo) }}" alt="Logo" style="max-width: 200px; height: auto; border: 2px solid rgba(14,209,255,0.3); border-radius: 10px; padding: 10px; background: rgba(255,255,255,0.05);">
+                </div>
+            {% endif %}
+            <input type="file" id="logo" name="logo" accept="image/*">
+            <small style="color: rgba(255,255,255,0.6); display: block; margin-top: 5px;">
+                يفضل PNG بخلفية شفافة - الحجم الموصى به: 200x200px
+            </small>
+        </div>
+
+        <div class="form-group">
+            <label for="favicon">أيقونة المتصفح (Favicon)</label>
+            {% if settings.favicon %}
+                <div style="margin-bottom: 15px;">
+                    <img src="{{ url_for('static', filename=settings.favicon) }}" alt="Favicon" style="max-width: 64px; height: auto; border: 2px solid rgba(14,209,255,0.3); border-radius: 10px; padding: 5px; background: rgba(255,255,255,0.05);">
+                </div>
+            {% endif %}
+            <input type="file" id="favicon" name="favicon" accept="image/*">
+            <small style="color: rgba(255,255,255,0.6); display: block; margin-top: 5px;">
+                يفضل PNG أو ICO - الحجم الموصى به: 32x32px أو 64x64px
+            </small>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 30px;">
+        <button type="submit" class="btn btn-primary" style="padding: 15px 40px; font-size: 18px;">
+            💾 حفظ التغييرات
+        </button>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary" style="padding: 15px 40px; font-size: 18px; margin-right: 15px;">
+            إلغاء
+        </a>
+    </div>
+</form>
+
+<script>
+// Update color display on change
+document.getElementById('primary_color').addEventListener('input', function(e) {
+    this.nextElementSibling.textContent = e.target.value;
+});
+
+document.getElementById('secondary_color').addEventListener('input', function(e) {
+    this.nextElementSibling.textContent = e.target.value;
+});
+
+document.getElementById('text_color').addEventListener('input', function(e) {
+    this.nextElementSibling.textContent = e.target.value;
+});
+</script>
+{% endblock %}

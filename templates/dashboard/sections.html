@@ -1,0 +1,190 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}إدارة الأقسام{% endblock %}
+{% block page_title %}إدارة الأقسام{% endblock %}
+
+{% block topbar_actions %}
+<button type="button" class="btn btn-primary" onclick="showAddModal()">
+    ➕ إضافة قسم جديد
+</button>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>جميع الأقسام ({{ sections|length }})</h3>
+    </div>
+
+    {% if sections %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>الترتيب</th>
+                <th>الاسم</th>
+                <th>العنوان</th>
+                <th>النوع</th>
+                <th>الحالة</th>
+                <th>الإجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for section in sections %}
+            <tr>
+                <td>{{ section.order }}</td>
+                <td>{{ section.name }}</td>
+                <td>{{ section.title }}</td>
+                <td>
+                    <span style="background: rgba(14,209,255,0.2); padding: 5px 12px; border-radius: 5px; font-size: 12px;">
+                        {{ section.section_type }}
+                    </span>
+                </td>
+                <td>
+                    {% if section.active %}
+                        <span style="color: #50ff96;">●</span> مفعل
+                    {% else %}
+                        <span style="color: #ff6b6b;">●</span> معطل
+                    {% endif %}
+                </td>
+                <td>
+                    <button class="btn btn-secondary" style="padding: 8px 15px; font-size: 14px;" onclick="editSection({{ section.id }}, '{{ section.name }}', '{{ section.title }}', '{{ section.content|replace('\n', '\\n')|replace('\'', '\\\'') }}', '{{ section.section_type }}', {{ 'true' if section.active else 'false' }})">
+                        ✏️ تعديل
+                    </button>
+                    <a href="{{ url_for('delete_section', id=section.id) }}" class="btn btn-danger" style="padding: 8px 15px; font-size: 14px;" onclick="return confirm('هل أنت متأكد من حذف هذا القسم؟')">
+                        🗑️ حذف
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="text-align: center; color: rgba(255,255,255,0.6); padding: 40px;">
+        لا توجد أقسام حالياً. قم بإضافة قسم جديد!
+    </p>
+    {% endif %}
+</div>
+
+<!-- Add Section Modal -->
+<div id="addModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
+    <div style="background: #060024; border: 2px solid #0ed1ff; border-radius: 15px; padding: 30px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto;">
+        <h2 style="color: #0ed1ff; margin-bottom: 20px;">إضافة قسم جديد</h2>
+
+        <form method="POST" action="{{ url_for('add_section') }}">
+            <div class="form-group">
+                <label>اسم القسم (داخلي)</label>
+                <input type="text" name="name" required placeholder="مثال: hero-section">
+                <small style="color: rgba(255,255,255,0.6);">اسم تعريفي للقسم (بدون مسافات)</small>
+            </div>
+
+            <div class="form-group">
+                <label>العنوان</label>
+                <input type="text" name="title" required placeholder="مثال: من نحن">
+            </div>
+
+            <div class="form-group">
+                <label>المحتوى</label>
+                <textarea name="content" rows="6" placeholder="محتوى القسم..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>نوع القسم</label>
+                <select name="section_type" required>
+                    <option value="">-- اختر النوع --</option>
+                    <option value="hero">Hero (البانر الرئيسي)</option>
+                    <option value="about">About (من نحن)</option>
+                    <option value="features">Features (المميزات)</option>
+                    <option value="services">Services (الخدمات)</option>
+                    <option value="portfolio">Portfolio (المشاريع)</option>
+                    <option value="pricing">Pricing (الأسعار)</option>
+                    <option value="testimonials">Testimonials (آراء العملاء)</option>
+                    <option value="faq">FAQ (الأسئلة الشائعة)</option>
+                    <option value="contact">Contact (التواصل)</option>
+                    <option value="custom">Custom (مخصص)</option>
+                </select>
+            </div>
+
+            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px;">
+                <button type="submit" class="btn btn-primary">💾 حفظ القسم</button>
+                <button type="button" class="btn btn-secondary" onclick="closeAddModal()">إلغاء</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Section Modal -->
+<div id="editModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
+    <div style="background: #060024; border: 2px solid #0ed1ff; border-radius: 15px; padding: 30px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto;">
+        <h2 style="color: #0ed1ff; margin-bottom: 20px;">تعديل القسم</h2>
+
+        <form method="POST" id="editForm">
+            <div class="form-group">
+                <label>اسم القسم (داخلي)</label>
+                <input type="text" name="name" id="edit_name" required>
+            </div>
+
+            <div class="form-group">
+                <label>العنوان</label>
+                <input type="text" name="title" id="edit_title" required>
+            </div>
+
+            <div class="form-group">
+                <label>المحتوى</label>
+                <textarea name="content" id="edit_content" rows="6"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>نوع القسم</label>
+                <select name="section_type" id="edit_type" required>
+                    <option value="hero">Hero (البانر الرئيسي)</option>
+                    <option value="about">About (من نحن)</option>
+                    <option value="features">Features (المميزات)</option>
+                    <option value="services">Services (الخدمات)</option>
+                    <option value="portfolio">Portfolio (المشاريع)</option>
+                    <option value="pricing">Pricing (الأسعار)</option>
+                    <option value="testimonials">Testimonials (آراء العملاء)</option>
+                    <option value="faq">FAQ (الأسئلة الشائعة)</option>
+                    <option value="contact">Contact (التواصل)</option>
+                    <option value="custom">Custom (مخصص)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label style="display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" name="active" id="edit_active" style="width: auto;">
+                    <span>تفعيل القسم</span>
+                </label>
+            </div>
+
+            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px;">
+                <button type="submit" class="btn btn-primary">💾 حفظ التعديلات</button>
+                <button type="button" class="btn btn-secondary" onclick="closeEditModal()">إلغاء</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function showAddModal() {
+    document.getElementById('addModal').style.display = 'flex';
+}
+
+function closeAddModal() {
+    document.getElementById('addModal').style.display = 'none';
+}
+
+function editSection(id, name, title, content, type, active) {
+    document.getElementById('edit_name').value = name;
+    document.getElementById('edit_title').value = title;
+    document.getElementById('edit_content').value = content;
+    document.getElementById('edit_type').value = type;
+    document.getElementById('edit_active').checked = active;
+
+    document.getElementById('editForm').action = '/dashboard/sections/edit/' + id;
+    document.getElementById('editModal').style.display = 'flex';
+}
+
+function closeEditModal() {
+    document.getElementById('editModal').style.display = 'none';
+}
+</script>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}الرئيسية{% endblock %}
+{% block page_title %}لوحة التحكم الرئيسية{% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card">
+        <h4>الأقسام</h4>
+        <div class="stat-value">{{ sections_count }}</div>
+    </div>
+    <div class="stat-card">
+        <h4>الخدمات</h4>
+        <div class="stat-value">{{ services_count }}</div>
+    </div>
+    <div class="stat-card">
+        <h4>المشاريع</h4>
+        <div class="stat-value">{{ portfolio_count }}</div>
+    </div>
+    <div class="stat-card">
+        <h4>آخر تحديث</h4>
+        <div class="stat-value" style="font-size: 18px;">{{ settings.updated_at.strftime('%Y-%m-%d') if settings else 'N/A' }}</div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3>مرحباً بك في لوحة التحكم</h3>
+    </div>
+    <p style="color: rgba(255,255,255,0.8); line-height: 1.8;">
+        من هنا يمكنك التحكم الكامل بموقع 3S Smart Software Solution. يمكنك تعديل:
+    </p>
+    <ul style="margin-top: 15px; margin-right: 20px; color: rgba(255,255,255,0.7);">
+        <li>الألوان والشعار من قسم <a href="{{ url_for('settings') }}" style="color: #0ed1ff;">الإعدادات العامة</a></li>
+        <li>إضافة وتعديل وحذف الأقسام من قسم <a href="{{ url_for('sections') }}" style="color: #0ed1ff;">الأقسام</a></li>
+        <li>إدارة الخدمات والمميزات من قسم <a href="{{ url_for('services') }}" style="color: #0ed1ff;">الخدمات</a></li>
+        <li>إضافة مشاريعك من قسم <a href="{{ url_for('portfolio') }}" style="color: #0ed1ff;">المشاريع</a></li>
+        <li>تحديث معلومات التواصل من قسم <a href="{{ url_for('contact') }}" style="color: #0ed1ff;">معلومات التواصل</a></li>
+    </ul>
+</div>
+
+<div class="card" style="margin-top: 20px;">
+    <div class="card-header">
+        <h3>نصائح سريعة</h3>
+    </div>
+    <div style="color: rgba(255,255,255,0.7); line-height: 1.8;">
+        <p><strong style="color: #0ed1ff;">💡 نصيحة:</strong> بعد إجراء أي تعديل، قم بزيارة الموقع الرئيسي للتأكد من التغييرات.</p>
+        <p style="margin-top: 10px;"><strong style="color: #0ed1ff;">🎨 الألوان:</strong> استخدم كود الألوان HEX (مثل #0ed1ff) للحصول على أفضل النتائج.</p>
+        <p style="margin-top: 10px;"><strong style="color: #0ed1ff;">📸 الصور:</strong> يفضل استخدام صور بدقة عالية وبصيغة PNG أو WEBP.</p>
+    </div>
+</div>
+
+<div style="text-align: center; margin-top: 30px;">
+    <a href="{{ url_for('index') }}" class="btn btn-primary" target="_blank">
+        عرض الموقع 🌐
+    </a>
+</div>
+{% endblock %}

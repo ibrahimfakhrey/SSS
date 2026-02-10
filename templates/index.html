@@ -8,16 +8,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="description" content="3S Smart Software Solution — حلول برمجية ذكية | منصات وأنظمة تشغيل للشركات في السعودية. حلول مخصصة، تقارير، ودعم بعد التسليم." />
+  <meta name="description" content="{{ settings.site_description if settings and settings.site_description else '3S Smart Software Solution — حلول برمجية ذكية' }}" />
   <meta name="keywords" content="حلول تقنية للشركات, تطوير أنظمة, منصات ويب, لوحات تحكم, تقارير KPI, أتمتة, ذكاء اصطناعي, السعودية, 3S, Smart Software Solution" />
-  <meta name="theme-color" content="#060024" />
+  <meta name="theme-color" content="{{ settings.primary_color if settings else '#060024' }}" />
 
-  <title>3S — Smart Software Solution</title>
+  <title>{{ settings.site_title if settings else "3S — Smart Software Solution" }}</title>
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="assets/3S Logo-07.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/3S Logo-07.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/3S Logo-07.png">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename=settings.logo) if settings and settings.logo else 'assets/3S Logo-07.png' }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename=settings.logo) if settings and settings.logo else 'assets/3S Logo-07.png' }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename=settings.logo) if settings and settings.logo else 'assets/3S Logo-07.png' }}">
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
@@ -42,17 +42,17 @@
 
   <style>
     :root{
-      --bg: #060024;
-      --bg2:#060024;
+      --bg: {{ settings.primary_color if settings else '#060024' }};
+      --bg2:{{ settings.primary_color if settings else '#060024' }};
       --navy:#060024;
-      --cyan:#0ed1ff;
+      --cyan:{{ settings.secondary_color if settings else '#0ed1ff' }};
       --purple:#060024;
       --violet:#0ed1ff;
       --gold:#0ed1ff;
       --gold-light:#0ed1ff;
       --gold-dark:#0ed1ff;
       --rose-gold:#0ed1ff;
-      --text:#ffffff;
+      --text:{{ settings.text_color if settings else '#ffffff' }};
       --muted:#0ed1ff;
       --stroke: rgba(14,209,255,.18);
       --card: rgba(14,209,255,.04);
@@ -121,6 +121,76 @@
     .container{max-width:var(--max); margin:0 auto; padding:0 20px}
     .section{padding:86px 0}
     .section.compact{padding:64px 0}
+
+    /* Light sections with white background */
+    .section.light{
+      background: {{ settings.text_color if settings else '#ffffff' }};
+      color: {{ settings.primary_color if settings else '#060024' }};
+    }
+    .section.light .title{
+      color: {{ settings.primary_color if settings else '#060024' }};
+    }
+    .section.light .subtitle{
+      color: rgba(6,0,36,.75);
+    }
+    .section.light .card{
+      background: rgba(6,0,36,.02);
+      border-color: rgba(6,0,36,.1);
+    }
+    .section.light .card:hover{
+      background: rgba(6,0,36,.04);
+      border-color: {{ settings.secondary_color if settings else '#0ed1ff' }};
+    }
+    .section.light .card h3,
+    .section.light .card h4{
+      color: {{ settings.primary_color if settings else '#060024' }};
+    }
+    .section.light .card p{
+      color: rgba(6,0,36,.7);
+    }
+    /* Pills and badges in light sections */
+    .section.light .pill{
+      background: {{ settings.secondary_color if settings else '#0ed1ff' }};
+      color: {{ settings.text_color if settings else '#ffffff' }};
+      border-color: {{ settings.secondary_color if settings else '#0ed1ff' }};
+    }
+    .section.light .kicker{
+      background: linear-gradient(135deg, rgba(14,209,255,.2), rgba(14,209,255,.1));
+      border-color: {{ settings.secondary_color if settings else '#0ed1ff' }};
+      color: {{ settings.secondary_color if settings else '#0ed1ff' }};
+    }
+    /* Step numbers in light sections */
+    .section.light .num{
+      background: {{ settings.secondary_color if settings else '#0ed1ff' }};
+      color: {{ settings.text_color if settings else '#ffffff' }};
+      border-color: {{ settings.secondary_color if settings else '#0ed1ff' }};
+    }
+    .section.light .step strong{
+      color: {{ settings.primary_color if settings else '#060024' }};
+    }
+    .section.light .step span{
+      color: rgba(6,0,36,.65);
+    }
+    /* Chevron in light sections */
+    .section.light .chev{
+      background: rgba(14,209,255,.15);
+      border-color: rgba(14,209,255,.3);
+      color: {{ settings.secondary_color if settings else '#0ed1ff' }};
+    }
+    /* Iconbox (number badges) in light sections */
+    .section.light .iconbox{
+      background: {{ settings.secondary_color if settings else '#0ed1ff' }};
+      border-color: {{ settings.secondary_color if settings else '#0ed1ff' }};
+      color: {{ settings.text_color if settings else '#ffffff' }};
+    }
+    /* Gradient text in light sections */
+    .section.light strong[style*="background-clip"]{
+      background: {{ settings.secondary_color if settings else '#0ed1ff' }} !important;
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+      background-clip: text !important;
+    }
+
     .title{
       font-family:"Cairo","Nunito",sans-serif;
       font-size: clamp(22px, 2.4vw, 30px);
@@ -274,6 +344,7 @@
       align-items: center;
       justify-content: center;
     }
+
     .hero-video-bg{
       position: absolute;
       top: 50%;
@@ -292,7 +363,8 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(5,4,11,.75);
+      background:
+        linear-gradient(135deg, rgba(6,0,36,.40) 0%, rgba(6,0,36,.35) 50%, rgba(14,209,255,.25) 100%);
       z-index: 2;
     }
     .hero-video-content{
@@ -301,6 +373,7 @@
       text-align: center;
       padding: 20px;
     }
+
 
     /* Handwriting Animation */
     .brand-3s-handwriting{
@@ -725,6 +798,18 @@
       flex:0 0 auto;
     }
     details[open] .chev{transform: rotate(180deg)}
+
+    /* Details in light sections */
+    .section.light details{
+      border-color: rgba(6,0,36,.12);
+      background: rgba(6,0,36,.03);
+    }
+    .section.light summary{
+      color: {{ settings.primary_color if settings else '#060024' }};
+    }
+    .section.light details p{
+      color: rgba(6,0,36,.75);
+    }
     details p{
       margin: 10px 0 0;
       color: rgba(234,240,255,.74);
@@ -1017,7 +1102,7 @@
   <div class="cyan-particles" id="cyanParticles"></div>
 
   <!-- Floating WhatsApp -->
-  <a class="whatsapp-float" href="https://wa.me/966532180937" target="_blank" id="waFloat" aria-label="WhatsApp">
+  <a class="whatsapp-float" href="https://wa.me/{{ contact.whatsapp if contact else "966532180937" }}" target="_blank" id="waFloat" aria-label="WhatsApp">
     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M16 0C7.164 0 0 7.164 0 16C0 18.777 0.744 21.373 2.044 23.617L0.696 28.696C0.582 29.109 0.726 29.547 1.064 29.806C1.263 29.942 1.496 30.01 1.73 30.01C1.899 30.01 2.069 29.97 2.224 29.889L7.523 27.406C9.653 28.553 12.056 29.184 14.615 29.291C23.318 29.709 30.781 23.137 31.889 14.542C32.972 6.134 26.408 -1.109 17.999 0.114C17.333 0.039 16.667 0 16 0ZM23.271 22.271C22.734 23.047 21.042 24.375 19.688 24.688C18.125 24.938 16.406 24.521 14.125 23.333C10.313 21.438 7.781 17.375 7.563 17.063C7.344 16.75 5.938 14.813 5.938 12.813C5.938 10.813 6.938 9.813 7.313 9.438C7.688 9.063 8.063 8.938 8.313 8.938C8.563 8.938 8.813 8.938 9.063 8.938C9.313 8.938 9.688 8.813 10.063 9.813C10.438 10.813 11.438 12.813 11.563 13.063C11.688 13.313 11.75 13.563 11.625 13.875C11.5 14.188 11.438 14.375 11.188 14.688C10.938 15 10.688 15.313 10.438 15.563C10.188 15.813 9.938 16.063 10.188 16.5C10.438 16.938 11.438 18.438 12.813 19.688C14.563 21.188 16 21.75 16.438 21.938C16.875 22.125 17.188 22.063 17.438 21.813C17.688 21.563 18.688 20.438 19 20C19.313 19.563 19.563 19.625 20 19.813C20.438 20 22.438 21 22.875 21.25C23.313 21.5 23.625 21.625 23.75 21.813C23.875 22 23.875 22.938 23.5 23.625C23.125 24.313 23.271 22.271 23.271 22.271Z" fill="white"/>
     </svg>
@@ -1035,9 +1120,9 @@
     <div class="container">
       <div class="nav">
         <a class="brand" href="#home">
-          <img src="assets/3S Logo-07.png" alt="3S Logo" style="height: 50px; width: auto; margin-left: 12px;">
+          <img src="{{ url_for('static', filename=settings.logo) if settings and settings.logo else 'assets/3S Logo-07.png' }}" alt="3S Logo" style="height: 50px; width: auto; margin-left: 12px;">
           <div class="name">
-            <strong style="font-size:16px; color: var(--cyan);">Smart Software Solution</strong>
+            <strong style="font-size:16px; color: var(--cyan);">{{ settings.site_name if settings else "Smart Software Solution" }}</strong>
             <span style="font-size:12px; color: rgba(14,209,255,.75);">حلول برمجية ذكية</span>
           </div>
         </a>
@@ -1078,6 +1163,10 @@
   <!-- Hero Video Section -->
   <main id="home">
     <section class="hero-video-section">
+      <!-- Background Video -->
+      <video class="hero-video-bg" autoplay loop muted playsinline>
+        <source src="{{ url_for('static', filename='assets/0_Earth_Planet_3840x2160.mov') }}" type="video/mp4">
+      </video>
       <div class="hero-video-overlay"></div>
       <div class="hero-video-content">
         <div class="brand-3s-handwriting">
@@ -1094,6 +1183,7 @@
           <div class="brand-subtitle">Smart Software Solution</div>
           <div class="brand-tagline">حلول برمجية ذكية للشركات</div>
         </div>
+
         <div class="scroll-indicator">
           <span>⌄</span>
         </div>
@@ -1174,7 +1264,7 @@
     </section>
 
     <!-- About -->
-    <section class="section compact" id="about">
+    <section class="section compact light" id="about">
       <div class="container">
         <div class="reveal">
           <h2 class="title">من نحن</h2>
@@ -1224,57 +1314,29 @@
         </div>
 
         <div class="grid-3" style="margin-top:18px">
+          {% if services %}
+            {% for service in services %}
+          <div class="card {% if loop.index == 2 %}featured {% endif %}reveal">
+            <div class="top">
+              <div class="iconbox">{{ service.icon or 'SV' }}</div>
+              <span class="pill">{% if loop.index == 2 %}Featured{% else %}Service{% endif %}</span>
+            </div>
+            <h4>{{ service.title }}</h4>
+            <p>{{ service.description }}</p>
+          </div>
+            {% endfor %}
+          {% else %}
+            <!-- Fallback if no services -->
           <div class="card reveal">
             <div class="top">
-              <div class="iconbox">BS</div>
-              <span class="pill">Business Systems</span>
+              <div class="iconbox">SV</div>
+              <span class="pill">Service</span>
             </div>
-            <h4>أنظمة إدارة الشركات</h4>
-            <p>CRM، إدارة المبيعات والطلبات، سير العمل، المهام والموافقات.</p>
-            <p style="margin-top:10px; color:rgba(234,240,255,.72)">النتيجة: تنظيم · تتبع · تقارير · تحكم</p>
+            <h4>خدماتنا</h4>
+            <p>قم بإضافة الخدمات من لوحة التحكم</p>
           </div>
-
-          <div class="card featured reveal">
-            <div class="top">
-              <div class="iconbox">CS</div>
-              <span class="pill">Featured</span>
-            </div>
-            <h4>أنظمة مخصصة حسب النشاط</h4>
-            <p>نظام يُبنى على طبيعة تشغيل شركتك، لا على قالب جاهز.</p>
-            <p style="margin-top:10px; color:rgba(234,240,255,.72)">
-              مناسب لـ: المقاولات · معاهد التدريب · B2B · الإدارات الداخلية
-            </p>
-          </div>
-
-          <div class="card reveal">
-            <div class="top">
-              <div class="iconbox">WP</div>
-              <span class="pill">Web Platforms</span>
-            </div>
-            <h4>منصات ويب احترافية</h4>
-            <p>بوابات عملاء/موردين، تسجيل ودخول، لوحات تحكم، صلاحيات.</p>
-            <p style="margin-top:10px; color:rgba(234,240,255,.72)">النتيجة: تجربة احترافية + إدارة واضحة</p>
-          </div>
-
-          <div class="card reveal">
-            <div class="top">
-              <div class="iconbox">BI</div>
-              <span class="pill">Dashboards</span>
-            </div>
-            <h4>التقارير والتحليل</h4>
-            <p>Dashboards، KPIs، تقارير تشغيلية، تصدير بيانات.</p>
-            <p style="margin-top:10px; color:rgba(234,240,255,.72)">لغة المديرين وأصحاب القرار</p>
-          </div>
-
-          <div class="card reveal">
-            <div class="top">
-              <div class="iconbox">AU</div>
-              <span class="pill">Automation</span>
-            </div>
-            <h4>الأتمتة وربط الأنظمة</h4>
-            <p>تقليل العمل اليدوي، ربط الأنظمة، إشعارات تلقائية، عمليات بدون تدخل.</p>
-            <p style="margin-top:10px; color:rgba(234,240,255,.72)">النتيجة: وقت أقل · أخطاء أقل · إنتاجية أعلى</p>
-          </div>
+          {% endif %}
+        </div>
 
           <div class="card reveal">
             <div class="top">
@@ -1367,7 +1429,7 @@
     </section>
 
     <!-- How we work -->
-    <section class="section compact" id="process">
+    <section class="section compact light" id="process">
       <div class="container">
         <div class="grid-2">
           <div class="reveal">
@@ -1480,49 +1542,26 @@
         </div>
 
         <div class="grid-3" style="margin-top:18px">
-          <div class="card reveal">
+          {% if pricing_plans %}
+            {% for plan in pricing_plans %}
+          <div class="card {% if plan.is_featured %}featured {% endif %}reveal">
             <div class="price-title">
-              <h4 style="margin:0;font-family:'Cairo'">باقة الانطلاق</h4>
-              <span class="pill">Starter</span>
+              <h4 style="margin:0;font-family:'Cairo'">{{ plan.name }}</h4>
+              <span class="pill">{{ plan.description }}</span>
             </div>
             <ul class="price-list">
-              <li><span class="check">✓</span><span>حل تقني أساسي</span></li>
-              <li><span class="check">✓</span><span>منصة/نظام بسيط</span></li>
-              <li><span class="check">✓</span><span>مناسب للشركات الناشئة</span></li>
+              {% set features = plan.features|from_json %}
+              {% for feature in features %}
+              <li><span class="check">✓</span><span>{{ feature }}</span></li>
+              {% endfor %}
             </ul>
             <div class="form-actions" style="margin-top:14px">
               <a class="btn" href="#contact">اطلب عرض</a>
             </div>
           </div>
-
-          <div class="card featured reveal">
-            <div class="price-title">
-              <h4 style="margin:0;font-family:'Cairo'">باقة الأعمال</h4>
-              <span class="pill">Business</span>
-            </div>
-            <ul class="price-list">
-              <li><span class="check">✓</span><span>منصة تفاعلية + لوحة تحكم</span></li>
-              <li><span class="check">✓</span><span>تقارير أساسية</span></li>
-              <li><span class="check">✓</span><span>دعم بعد التسليم</span></li>
-            </ul>
-            <div class="form-actions" style="margin-top:14px">
-              <a class="btn" href="#contact">تواصل الآن</a>
-            </div>
-          </div>
-
-          <div class="card reveal">
-            <div class="price-title">
-              <h4 style="margin:0;font-family:'Cairo'">باقة المؤسسات</h4>
-              <span class="pill">Enterprise</span>
-            </div>
-            <ul class="price-list">
-              <li><span class="check">✓</span><span>نظام مخصص بالكامل</span></li>
-              <li><span class="check">✓</span><span>تقارير متقدمة + أتمتة</span></li>
-              <li><span class="check">✓</span><span>قابلية توسع عالية</span></li>
-            </ul>
-            <div class="form-actions" style="margin-top:14px">
-              <a class="btn" href="#contact">اطلب جلسة</a>
-            </div>
+            {% endfor %}
+          {% endif %}
+        </div>
           </div>
         </div>
 
@@ -1534,7 +1573,7 @@
     </section>
 
     <!-- FAQ -->
-    <section class="section compact" id="faq">
+    <section class="section compact light" id="faq">
       <div class="container">
         <div class="reveal">
           <h2 class="title">الأسئلة الشائعة</h2>
@@ -1542,40 +1581,87 @@
         </div>
 
         <div class="faq">
+          {% if faqs %}
+            {% for faq in faqs %}
           <details class="reveal">
-            <summary>هل تقدمون مواقع أم أنظمة؟ <span class="chev">⌄</span></summary>
-            <p>نحن نبني أنظمة ومنصات تشغيل للشركات (إدارة + متابعة + تقارير + صلاحيات) وليس مجرد مواقع شكلية.</p>
+            <summary>{{ faq.question }} <span class="chev">⌄</span></summary>
+            <p>{{ faq.answer }}</p>
           </details>
-
+            {% endfor %}
+          {% else %}
           <details class="reveal">
-            <summary>هل الحل يكون مخصصًا؟ <span class="chev">⌄</span></summary>
-            <p>نعم، كل نظام يُبنى حسب نشاط الشركة وطريقة التشغيل وحجم الفريق.</p>
+            <summary>لا توجد أسئلة حالياً <span class="chev">⌄</span></summary>
+            <p>قم بإضافة الأسئلة الشائعة من لوحة التحكم</p>
           </details>
-
-          <details class="reveal">
-            <summary>هل النظام قابل للتوسع مستقبلاً؟ <span class="chev">⌄</span></summary>
-            <p>بالتأكيد. نضع النمو في الحسبان لإضافة مستخدمين وميزات وتقارير بدون كسر النظام.</p>
-          </details>
-
-          <details class="reveal">
-            <summary>هل يوجد دعم بعد التسليم؟ <span class="chev">⌄</span></summary>
-            <p>نعم. نوفر دعمًا وتحسينات وتطويرًا مستمرًا حسب الاتفاق، كشريك تقني لا كمورد فقط.</p>
-          </details>
-
-          <details class="reveal">
-            <summary>هل يمكن ربط النظام بأنظمة أخرى؟ <span class="chev">⌄</span></summary>
-            <p>نعم، حسب احتياجك: بريد/إشعارات/واجهات تكامل/أنظمة داخلية… إلخ.</p>
-          </details>
-
-          <details class="reveal">
-            <summary>هل يمكن إضافة تقارير وذكاء اصطناعي؟ <span class="chev">⌄</span></summary>
-            <p>نعم، بحسب الهدف: فلترة، تصنيف، اقتراح قرارات، Chatbots داخلية، ولوحات KPIs.</p>
-          </details>
+          {% endif %}
         </div>
       </div>
     </section>
 
-    <!-- Contact -->
+    
+  <!-- ========== DYNAMIC SECTIONS - Auto Display ========== -->
+  <!-- All sections added from dashboard will appear here automatically -->
+  {% if sections %}
+    {% for section in sections %}
+      {% if section.active and section.section_type not in ['hero', 'about', 'services', 'pricing', 'faq', 'contact'] %}
+
+      <!-- Section: {{ section.name }} -->
+      <section class="section {% if section.section_type == 'cta' %}compact{% endif %}"
+               id="{{ section.name }}"
+               {% if section.section_type == 'cta' %}style="background: linear-gradient(135deg, rgba(14,209,255,.15), rgba(14,209,255,.05))"{% endif %}>
+        <div class="container">
+
+          {% if section.section_type == 'cta' %}
+          <!-- Call to Action Style -->
+          <div class="card reveal" style="text-align:center; padding:60px 40px; background:rgba(14,209,255,.08); border:2px solid rgba(14,209,255,.3)">
+            <h2 class="title" style="margin-bottom:15px">{{ section.title }}</h2>
+            <div style="font-size:18px; color:rgba(234,240,255,.85); margin-bottom:30px">
+              {{ section.content|safe }}
+            </div>
+            <div class="form-actions" style="justify-content:center">
+              <a href="#contact" class="btn" style="padding:15px 40px; font-size:18px">تواصل معنا الآن</a>
+            </div>
+          </div>
+
+          {% elif section.section_type == 'testimonials' %}
+          <!-- Testimonials Style -->
+          <div class="reveal">
+            <h2 class="title">{{ section.title }}</h2>
+            <p class="subtitle">{{ section.content|safe }}</p>
+          </div>
+
+          {% elif section.section_type == 'stats' %}
+          <!-- Stats Style -->
+          <div class="reveal">
+            <h2 class="title">{{ section.title }}</h2>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; margin-top:24px">
+            <div class="reveal" style="text-align:center; padding:30px; background:rgba(14,209,255,.05); border:1px solid rgba(14,209,255,.2); border-radius:15px">
+              {{ section.content|safe }}
+            </div>
+          </div>
+
+          {% else %}
+          <!-- Default Style -->
+          <div class="reveal">
+            <h2 class="title">{{ section.title }}</h2>
+            <div class="subtitle" style="margin-top:18px">
+              {{ section.content|safe }}
+            </div>
+          </div>
+
+          {% endif %}
+
+        </div>
+      </section>
+
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+  <!-- ========== END DYNAMIC SECTIONS ========== -->
+
+  
+<!-- Contact -->
     <section class="section" id="contact">
       <div class="container">
         <div class="reveal">
@@ -1585,7 +1671,7 @@
 
         <div class="contact-grid" style="margin-top:18px">
           <div class="reveal">
-            <a class="contact-item" href="https://wa.me/966532180937" target="_blank" style="margin-bottom:12px; text-decoration:none">
+            <a class="contact-item" href="https://wa.me/{{ contact.whatsapp if contact else "966532180937" }}" target="_blank" style="margin-bottom:12px; text-decoration:none">
               <div class="iconbox">WA</div>
               <div>
                 <strong>WhatsApp</strong>
@@ -1688,7 +1774,7 @@
       </div>
 
       <div style="margin-top:14px; opacity:.8">
-        © <span id="year"></span> <span style="background: linear-gradient(135deg, var(--gold), var(--gold-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight:600;">3S Smart Software Solution</span>. جميع الحقوق محفوظة.
+        © 2026 <span style="background: linear-gradient(135deg, var(--gold), var(--gold-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight:600;">3S Smart Software Solution</span>. جميع الحقوق محفوظة.
       </div>
     </div>
   </footer>
@@ -1954,6 +2040,10 @@
     }, { threshold: 0.1 });
 
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // ========== Background Video ==========
+    // Video automatically loops with autoplay, loop, and muted attributes
+    console.log('Background video initialized');
 
   </script>
 </body>

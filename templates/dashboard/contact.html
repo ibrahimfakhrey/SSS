@@ -1,0 +1,72 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}معلومات التواصل{% endblock %}
+{% block page_title %}معلومات التواصل{% endblock %}
+
+{% block content %}
+<form method="POST">
+    <div class="card">
+        <div class="card-header">
+            <h3>معلومات الاتصال الأساسية</h3>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="form-group">
+                <label for="phone">رقم الهاتف</label>
+                <input type="text" id="phone" name="phone" value="{{ contact.phone }}" placeholder="966532180937">
+            </div>
+
+            <div class="form-group">
+                <label for="whatsapp">رقم الواتساب</label>
+                <input type="text" id="whatsapp" name="whatsapp" value="{{ contact.whatsapp }}" placeholder="966532180937">
+                <small style="color: rgba(255,255,255,0.6);">سيظهر في زر الواتساب العائم</small>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="email">البريد الإلكتروني</label>
+            <input type="email" id="email" name="email" value="{{ contact.email }}" placeholder="info@3s-solutions.com">
+        </div>
+
+        <div class="form-group">
+            <label for="address">العنوان</label>
+            <textarea id="address" name="address" rows="3" placeholder="الرياض، المملكة العربية السعودية">{{ contact.address }}</textarea>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3>روابط التواصل الاجتماعي</h3>
+        </div>
+
+        <div class="form-group">
+            <label for="facebook">فيسبوك (Facebook)</label>
+            <input type="url" id="facebook" name="facebook" value="{{ contact.facebook }}" placeholder="https://facebook.com/your-page">
+        </div>
+
+        <div class="form-group">
+            <label for="twitter">تويتر / X</label>
+            <input type="url" id="twitter" name="twitter" value="{{ contact.twitter }}" placeholder="https://twitter.com/your-account">
+        </div>
+
+        <div class="form-group">
+            <label for="linkedin">لينكد إن (LinkedIn)</label>
+            <input type="url" id="linkedin" name="linkedin" value="{{ contact.linkedin }}" placeholder="https://linkedin.com/company/your-company">
+        </div>
+
+        <div class="form-group">
+            <label for="instagram">إنستغرام (Instagram)</label>
+            <input type="url" id="instagram" name="instagram" value="{{ contact.instagram }}" placeholder="https://instagram.com/your-account">
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 30px;">
+        <button type="submit" class="btn btn-primary" style="padding: 15px 40px; font-size: 18px;">
+            💾 حفظ التغييرات
+        </button>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary" style="padding: 15px 40px; font-size: 18px; margin-right: 15px;">
+            إلغاء
+        </a>
+    </div>
+</form>
+{% endblock %}
