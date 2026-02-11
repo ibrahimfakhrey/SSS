@@ -12,8 +12,21 @@ import os
 import json
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key-here-change-in-production'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+
+# Configuration - supports both local (SQLite) and production (PostgreSQL on Render)
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key-here-change-in-production')
+
+# Database configuration - use PostgreSQL on Render, SQLite locally
+database_url = os.environ.get('DATABASE_URL')
+if database_url:
+    # Render provides DATABASE_URL, fix postgres:// to postgresql://
+    if database_url.startswith('postgres://'):
+        database_url = database_url.replace('postgres://', 'postgresql://', 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+else:
+    # Local development with SQLite
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
