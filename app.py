@@ -9,6 +9,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from datetime import datetime
 import os
+import sys
 import json
 
 app = Flask(__name__)
@@ -220,6 +221,31 @@ def index():
                          pricing_plans=pricing_plans,
                          faqs=faqs,
                          contact=contact)
+
+@app.route('/test')
+def test():
+    """Test route to verify deployment"""
+    database_type = 'PostgreSQL' if os.environ.get('DATABASE_URL') else 'SQLite'
+    db_uri = app.config['SQLALCHEMY_DATABASE_URI']
+
+    # Hide sensitive database credentials
+    if 'postgresql://' in db_uri:
+        db_display = 'PostgreSQL (Connected)'
+    else:
+        db_display = db_uri
+
+    return jsonify({
+        'status': 'success',
+        'message': '🚀 3S Smart Software Solution is running!',
+        'database': database_type,
+        'database_uri': db_display,
+        'environment': 'Production' if os.environ.get('DATABASE_URL') else 'Development',
+        'python_version': os.sys.version,
+        'timestamp': datetime.utcnow().isoformat(),
+        'users_count': User.query.count(),
+        'services_count': Service.query.count(),
+        'portfolio_count': Portfolio.query.count(),
+    }), 200
 
 @app.route('/test-db')
 def test_db():
