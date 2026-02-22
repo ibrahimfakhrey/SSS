@@ -1,11 +1,12 @@
 [phases.setup]
-providers = ["python"]
+nixPkgs = ["python39", "gcc"]
+aptPkgs = ["libpq-dev"]
 
 [phases.install]
-cmds = ["pip install -r requirements.txt"]
+cmds = ["python3 -m venv /opt/venv", ". /opt/venv/bin/activate && pip install -r requirements.txt"]
 
 [phases.build]
 cmds = ["mkdir -p static/uploads instance"]
 
 [start]
-cmd = "gunicorn app:app --bind 0.0.0.0:$PORT"
+cmd = ". /opt/venv/bin/activate && gunicorn app:app --bind 0.0.0.0:$PORT"
