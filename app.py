@@ -14,13 +14,13 @@ import json
 
 app = Flask(__name__)
 
-# Configuration - supports both local (SQLite) and production (PostgreSQL on Render)
+# Configuration - supports both local (SQLite) and production (PostgreSQL on Railway/Render)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key-here-change-in-production')
 
-# Database configuration - use PostgreSQL on Render, SQLite locally
+# Database configuration - use PostgreSQL on Railway/Render, SQLite locally
 database_url = os.environ.get('DATABASE_URL')
 if database_url:
-    # Render provides DATABASE_URL, fix postgres:// to postgresql://
+    # Railway/Render provide DATABASE_URL, fix postgres:// to postgresql://
     if database_url.startswith('postgres://'):
         database_url = database_url.replace('postgres://', 'postgresql://', 1)
     app.config['SQLALCHEMY_DATABASE_URI'] = database_url
@@ -164,7 +164,7 @@ class Testimonial(db.Model):
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
-# ============= AUTO INIT DB (Render/Gunicorn) =============
+# ============= AUTO INIT DB (Railway/Render/Gunicorn) =============
 with app.app_context():
     db.create_all()
 
@@ -528,5 +528,6 @@ def init_db():
 
 if __name__ == '__main__':
     init_db()
-    app.run(debug=True, port=5000)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=True, host='0.0.0.0', port=port)
 
