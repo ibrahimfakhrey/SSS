@@ -65,8 +65,8 @@ class SiteSettings(db.Model):
     primary_color = db.Column(db.String(7), default='#060024')
     secondary_color = db.Column(db.String(7), default='#0ed1ff')
     text_color = db.Column(db.String(7), default='#ffffff')
-    logo = db.Column(db.String(200), default='assets/3S Logo-07.png')
-    favicon = db.Column(db.String(200), default='assets/3S Logo-07.png')
+    logo = db.Column(db.String(200), default='assets/3S_Logo-07.png')
+    favicon = db.Column(db.String(200), default='assets/3S_Logo-07.png')
     keywords = db.Column(db.Text)
     author = db.Column(db.String(100))
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -184,8 +184,8 @@ with app.app_context():
             site_description='حلول برمجية ذكية للشركات',
             primary_color='#060024',
             secondary_color='#0ed1ff',
-            logo='assets/3S Logo-07.png',
-            favicon='assets/3S Logo-07.png'
+            logo='assets/3S_Logo-07.png',
+            favicon='assets/3S_Logo-07.png'
         )
         db.session.add(settings)
 
@@ -197,6 +197,14 @@ with app.app_context():
             email='info@3s-solutions.com'
         )
         db.session.add(contact)
+
+    # Fix logo path if it still references the old filename with space
+    existing_settings = SiteSettings.query.first()
+    if existing_settings:
+        if existing_settings.logo == 'assets/3S Logo-07.png':
+            existing_settings.logo = 'assets/3S_Logo-07.png'
+        if existing_settings.favicon == 'assets/3S Logo-07.png':
+            existing_settings.favicon = 'assets/3S_Logo-07.png'
 
     db.session.commit()
 
@@ -509,8 +517,8 @@ def init_db():
                 site_description='حلول برمجية ذكية للشركات',
                 primary_color='#060024',
                 secondary_color='#0ed1ff',
-                logo='assets/3S Logo-07.png',
-                favicon='assets/3S Logo-07.png'
+                logo='assets/3S_Logo-07.png',
+                favicon='assets/3S_Logo-07.png'
             )
             db.session.add(settings)
 
